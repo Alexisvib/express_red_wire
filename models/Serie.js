@@ -42,6 +42,16 @@ const deleteById = async (id) => {
   return sql[0];
 };
 
+const deleteAllBySeen = async (seen) => {
+  const query =
+    "DELETE from serie WHERE seen = " + (seen === "true" ? "1" : "0");
+  const sql = await db.query(query);
+  if (sql[0].affectedRows === 0) {
+    return null;
+  }
+  return { message: "nb serie supprimée : " + sql[0].affectedRows };
+};
+
 const create = async (name, date_creation, seen, episode_number) => {
   const query =
     "INSERT INTO serie (name, date_creation, seen, episode_number) VALUES (?,?,?,?)";
@@ -98,6 +108,15 @@ const pagination = async (limit = null, offset = null) => {
   };
 };
 
+const toggleSeen = async (id) => {
+  const query = "UPDATE serie SET seen = !seen WHERE id = ?";
+  const sql = await db.query(query, [id]);
+  if (sql[0].affectedRows === 0) {
+    return null;
+  }
+  return { message: "serie updated !" };
+};
+
 module.exports = {
   findAll,
   findOneById,
@@ -105,4 +124,6 @@ module.exports = {
   create,
   patch,
   deleteById,
+  toggleSeen,
+  deleteAllBySeen,
 };

@@ -63,14 +63,34 @@ app.patch("/:id", async (req, res) => {
   return res.status(201).json(result);
 });
 
+//Put togggle Boolean
+app.put("/:id", async (req, res) => {
+  id = req.params.id;
+  const result = await Serie.toggleSeen(id);
+  if (!result) {
+    return res.status(404).json({ erreur: "404 NOT FOUND" });
+  }
+  return res.status(201).json(result);
+});
+
 //Delete
 app.delete("/:id", async (req, res) => {
   id = req.params.id;
   const result = await Serie.deleteById(id);
   if (!result) {
-    return res.status(404).json({ erreur: "404 NOT FOUND" });
+    return res.status(200).json({ erreur: "404 NOT FOUND" });
   }
   return res.status(200).json({ message: "Serie deleted" });
+});
+
+//Delete all with boolean value
+app.delete("/all/:seen", async (req, res) => {
+  seen = req.params.seen;
+  const result = await Serie.deleteAllBySeen(seen);
+  if (!result) {
+    return res.status(404).json({ message: "aucune serie supprimée" });
+  }
+  return res.status(200).json(result);
 });
 
 module.exports = app;
